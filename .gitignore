@@ -1,0 +1,4 @@
+xml-parser/*.xml
+xml-parser/old/*.xml
+xml-parser/bin/*
+xml-parser/*.xls

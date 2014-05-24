@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Xml-parser
+Bundle-SymbolicName: xml-parser
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: xml_parser.Activator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
