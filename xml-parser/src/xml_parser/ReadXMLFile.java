@@ -29,9 +29,7 @@ public class ReadXMLFile {
 		
 		try {
 
-			File fXmlFile = new File(
-	//				"/Users/willms/Documents/workspace/xml-parser/Tricky.xml");	
-		"/Users/willms/Documents/workspace/xml-parser/Export_2014-05-24.xml");	
+			File fXmlFile = new File("Export_2014-05-24.xml");	
 //					"/Users/willms/Documents/workspace/xml-parser/Export_2013-10-13.xml");
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
@@ -102,6 +100,29 @@ public class ReadXMLFile {
 			}
 		});
 		
+		
+		// sort students by grade in each family
+		for (Family f : families) {
+			
+			Collections.sort(f.students, new Comparator<Student>() {
+
+				@Override
+				public int compare(Student o1, Student o2) {
+					if (o1.grade.equals("K") && o2.grade.equals("K")) {
+						return 0;
+					}
+					if (o1.grade.equals("K")) return -1; 
+					if (o2.grade.equals("K")) return 1; 
+					
+					return o1.grade.compareTo(o2.grade);
+				}
+			});
+		}
+		
+		
+		
+		
+		
 		//PdfPrinter.printOneFamilyPerPage(families);
 		
 		WriteExcel excel = new WriteExcel (families);
@@ -139,8 +160,29 @@ public class ReadXMLFile {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// TODO Print families to PDF and cleaned up spreadsheet
 		
+
+		try {
+			excel.setOutputFile("ITAgreements.xls");
+			excel.writeITAgreements();
+		} catch (WriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			excel.setOutputFile("InformationDisclosure.xls");
+			excel.writeInfoDisclosure();
+		} catch (WriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

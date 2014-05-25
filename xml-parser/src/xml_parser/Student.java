@@ -17,7 +17,6 @@ public class Student {
 	String allergiesMedical = "";
 	String parentITAgreement = "";
 	String parentITDiscussedWithChild = "";
-	String studentITAgreement = "";
 	String studentITDiscussedWithParent = "";
 	String parentPublishPermission = "";
 	String studentPublishPermission = "";
