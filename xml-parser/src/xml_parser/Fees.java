@@ -13,6 +13,7 @@ public class Fees {
 	Integer yearbook = null;
 	Integer school = null;
 	Integer gr6Campout = null;
+	Integer gr7Technology = null;
 	Integer gr9SALTS = null;
 	Integer gr9Graduation = null;
 	Integer society = null;
@@ -26,6 +27,7 @@ public class Fees {
 		System.out.println("Yearbook Fee: " + yearbook);
 		System.out.println("School Fee: " + school);
 		System.out.println("Grade 6 Campout Fee: " + gr6Campout);
+		System.out.println("Grade 7 Technology Fee: " + gr7Technology);
 		System.out.println("Grade 9 SALTS Travel Fee: " + gr9SALTS);
 		System.out.println("Grade 9 Graduation Fee: " + gr9Graduation);
 		System.out.println("Society Student Fee: " + society);

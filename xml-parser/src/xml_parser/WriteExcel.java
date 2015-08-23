@@ -10,6 +10,7 @@ import jxl.CellView;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.format.Alignment;
+import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
 import jxl.write.Formula;
 import jxl.write.Label;
@@ -138,6 +139,25 @@ public class WriteExcel {
 		sheet.addCell(label);
 	}
 
+	private void addYellowNoLabel(WritableSheet sheet, int column, int row, String s)
+			throws WriteException, RowsExceededException {
+		Label label;
+		
+		// Lets create a times font with Yellow background
+		WritableFont times10pt = new WritableFont(WritableFont.TIMES, 10);
+		// Define the cell format
+		WritableCellFormat yellow = new WritableCellFormat(times10pt);
+		// Lets automatically wrap the cells
+		yellow.setWrap(true);
+		
+		if (s.equals("No")) {
+			yellow.setBackground(Colour.YELLOW);
+		}
+		
+		label = new Label(column, row, s, yellow);
+		sheet.addCell(label);
+	}
+
 	/**
 	 * @param excelSheet
 	 * @param row
@@ -187,9 +207,9 @@ public class WriteExcel {
 			addLabel(excelSheet, 13, row, f.extras.numberOfYearbooks.toString());
 			addLabel(excelSheet, 14, row, "$" + f.fees.yearbook.toString());
 
-			addLabel(excelSheet, 18, row, f.extras.contactAboutBilling);
+			addLabel(excelSheet, 19, row, f.extras.contactAboutBilling);
 
-			addLabel(excelSheet, 19, row, "$" + f.fees.total.toString());
+			addLabel(excelSheet, 20, row, "$" + f.fees.total.toString());
 
 			// store total amount of student fees
 			Integer studentFeeTotal = 0;
@@ -237,10 +257,16 @@ public class WriteExcel {
 						addLabel(excelSheet, 15, row,
 								"$" + f.grade6CampoutFee.toString());
 						break;
-					case 9:
+						//TODO: FIGURE OUT IF WE WANT CONSTANTS HERE OR ACTUAL FAMILY FEES
+/*					case 7:
 						addLabel(excelSheet, 16, row,
-								"$" + f.grade9GradFee.toString());
+								"$" + f.grade7.toString());
+						break;
+						*/
+					case 9:
 						addLabel(excelSheet, 17, row,
+								"$" + f.grade9GradFee.toString());
+						addLabel(excelSheet, 18, row,
 								"$" + f.saltsFee.toString());
 						break;
 					}
@@ -309,10 +335,11 @@ public class WriteExcel {
 		addCaption(sheet, 13, 0, "# Yearbook");
 		addCaption(sheet, 14, 0, "Yearbook Fee");
 		addCaption(sheet, 15, 0, "Gr 6 Campout");
-		addCaption(sheet, 16, 0, "Gr 9 Grad");
-		addCaption(sheet, 17, 0, "Gr 9 SALTS");
-		addCaption(sheet, 18, 0, "Contact Family?");
-		addCaption(sheet, 19, 0, "Total");
+		addCaption(sheet, 16, 0, "Gr 7 Technology");		
+		addCaption(sheet, 17, 0, "Gr 9 Grad");
+		addCaption(sheet, 18, 0, "Gr 9 SALTS");
+		addCaption(sheet, 19, 0, "Contact Family?");
+		addCaption(sheet, 20, 0, "Total");
 
 	}
 
@@ -324,7 +351,7 @@ public class WriteExcel {
 		wbSettings.setLocale(new Locale("en", "EN"));
 
 		WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
-		workbook.createSheet("Financial Information", 0);
+		workbook.createSheet("Volunteer Outcomes", 0);
 		WritableSheet excelSheet = workbook.getSheet(0);
 		createVolunteerOutcomesLabels(excelSheet);
 
@@ -338,23 +365,20 @@ public class WriteExcel {
 			addLabel(excelSheet, i++, row, f.mothersEmail);
 
 			if (f.volunteering.alreadyVolunteering.equals("Yes")) {
-				addLabel(excelSheet, i++, row, f.volunteering.existingPosition);
-			} else if (f.volunteering.eventOptions != null) {
-				for (String option : f.volunteering.eventOptions) {
-					addLabel(excelSheet, i++, row, option);
-
-				}
+				addLabel(excelSheet, 4, row, f.volunteering.existingPosition);
 			} else {
-				for (String option : f.volunteering.monthlyOptions) {
-					addLabel(excelSheet, i++, row, option);
-				}
+				addLabel(excelSheet, 5, row, f.volunteering.interestedArea);
 			}
+			i = 6;
+			String tmpTimes = "";
+			for (String times : f.volunteering.availableTimes) {
+				tmpTimes += times + ", ";
+			}
+			addLabel(excelSheet, i++, row, tmpTimes);  //available times in one string
 
-			i = 7;
 			addLabel(excelSheet, i++, row, f.volunteering.additionalOptions);
-			addLabel(excelSheet, i++, row,
-					f.volunteering.societyAdminContactPlease);
-
+			addLabel(excelSheet, i++, row, f.volunteering.otherTalents);
+			
 			row++; // increment row count
 		}
 
@@ -390,11 +414,11 @@ public class WriteExcel {
 		addCaption(sheet, i++, 0, "Home Phone");
 		addCaption(sheet, i++, 0, "Father's Email");
 		addCaption(sheet, i++, 0, "Mother's Email");
-		addCaption(sheet, i++, 0, "Selection #1");
-		addCaption(sheet, i++, 0, "Selection #2");
-		addCaption(sheet, i++, 0, "Selection #3");
+		addCaption(sheet, i++, 0, "Already Volunteering");
+		addCaption(sheet, i++, 0, "Position");
+		addCaption(sheet, i++, 0, "Available times");
+		addCaption(sheet, i++, 0, "Other Options");
 		addCaption(sheet, i++, 0, "Comments");
-		addCaption(sheet, i++, 0, "SA to Contact?");
 
 	}
 
@@ -406,7 +430,7 @@ public class WriteExcel {
 		wbSettings.setLocale(new Locale("en", "EN"));
 
 		WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
-		workbook.createSheet("Financial Information", 0);
+		workbook.createSheet("School Directory", 0);
 		WritableSheet excelSheet = workbook.getSheet(0);
 		createSchoolDirectoryLabels(excelSheet);
 
@@ -437,6 +461,8 @@ public class WriteExcel {
 				}
 			}
 			addLabel(excelSheet, i++, row, children.toString());
+			addLabel(excelSheet, i++, row, f.directory.changesToDirectoryInfo);
+			addYellowNoLabel(excelSheet, i++, row, f.directory.schoolDirectoryConsentForm.startsWith("Please include") ? "Yes": "No");
 
 			row++; // increment row count
 		}
@@ -476,6 +502,8 @@ public class WriteExcel {
 		addCaption(sheet, i++, 0, "Father's Email");
 		addCaption(sheet, i++, 0, "Mother's Email");
 		addCaption(sheet, i++, 0, "Children");
+		addCaption(sheet, i++, 0, "Comments/Changes/Omissions");
+		addCaption(sheet, i++, 0, "Include in Directory?");
 
 	}
 
@@ -487,7 +515,7 @@ public class WriteExcel {
 		wbSettings.setLocale(new Locale("en", "EN"));
 
 		WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
-		workbook.createSheet("Financial Information", 0);
+		workbook.createSheet("IT Agreements", 0);
 		WritableSheet excelSheet = workbook.getSheet(0);
 		createITLabels(excelSheet);
 
@@ -499,7 +527,7 @@ public class WriteExcel {
 				int i = 0;
 
 				addLabel(excelSheet, i++, row, s.lastName + ", " + s.firstName);
-				addLabel(excelSheet, i++, row, f.FOIP ? "Yes" : "No");
+				addYellowNoLabel(excelSheet, i++, row, f.FOIP ? "Yes" : "No");
 				addLabel(excelSheet, i++, row, s.parentITAgreement + "\n" +  s.parentITDiscussedWithChild + "\n" + s.studentITDiscussedWithParent);
 				addLabel(excelSheet, i++, row, s.parentPublishPermission + "\n" +  s.studentPublishPermission);
 				addLabel(excelSheet, i++, row, s.bringingOwnDevice + "\n" + s.parentDeviceAgreement + "\n" + s.studentDeviceAgreement); 
@@ -553,7 +581,7 @@ public class WriteExcel {
 		wbSettings.setLocale(new Locale("en", "EN"));
 
 		WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
-		workbook.createSheet("Financial Information", 0);
+		workbook.createSheet("Information Disclosure Consent", 0);
 		WritableSheet excelSheet = workbook.getSheet(0);
 		createInfoDisclosureLabels(excelSheet);
 
@@ -563,10 +591,15 @@ public class WriteExcel {
 			int i = 0;
 			i = writeParentNames(excelSheet, row, f, i);
 
-			addLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.copywriteRelease.startsWith("I give") ? "Yes" : "No");
-			addLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.schoolCouncilInfoDisclosure.startsWith("I give") ? "Yes" : "No");
-			addLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.mediaConsentForm.startsWith("I give") ? "Yes" : "No");
+			addYellowNoLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.copywriteRelease.startsWith("I give") ? "Yes" : "No");
+			addYellowNoLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.schoolCouncilInfoDisclosure.startsWith("I give") ? "Yes" : "No");
+			addYellowNoLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.mediaConsentForm.startsWith("I give") ? "Yes" : "No");
 
+			// create yellow labels first (and then over-write with white "Yes" labels after)
+			for (int tmp=4; tmp < 12; tmp++) {
+				addYellowNoLabel(excelSheet, tmp, row, "No");
+			}
+			
 			for (String d : f.consentOfInfoDisclosure.internetInfoDisclosure) {
 				
 				if (d.equals("Electronic School Newsletter")) i=4;
@@ -581,7 +614,7 @@ public class WriteExcel {
 			}
 
 			i=12;
-			addLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.differentConsentCriteria);
+			addYellowNoLabel(excelSheet, i++, row, f.consentOfInfoDisclosure.differentConsentCriteria);
 			
 		
 
@@ -638,6 +671,136 @@ public class WriteExcel {
 
 		sheet.mergeCells(i, 0, i, 1);
 		addCaption(sheet, i++, 0, "Comments");
+
+	}
+
+	// Write locker agreement results
+	public void writeLockerAgreement() throws IOException, WriteException {
+			File file = new File(outputFile);
+			WorkbookSettings wbSettings = new WorkbookSettings();
+
+			wbSettings.setLocale(new Locale("en", "EN"));
+
+			WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
+			workbook.createSheet("Locker Agreements", 0);
+			WritableSheet excelSheet = workbook.getSheet(0);
+			createLockerAgreementLabels(excelSheet);
+
+			// write each student to the spreadsheet
+			int row = 1;
+			for (Family f : families) {
+				for (Student s : f.students) {
+
+					// if student is not in grades 4-9, skip
+					try {
+						if (Integer.parseInt(s.grade) < 4) {
+							continue;
+						}
+					} catch (NumberFormatException e) {
+						// this is "K"
+						continue;
+					}
+						
+						
+					int i = 0;
+
+					addLabel(excelSheet, i++, row, s.lastName + ", " + s.firstName);
+					addLabel(excelSheet, i++, row, s.grade);
+					addYellowNoLabel(excelSheet, i++, row, s.lockerAgreement);
+
+					row++; // increment row count
+				}
+			}
+			
+			workbook.write();
+			workbook.close();
+		}
+
+		private void createLockerAgreementLabels(WritableSheet sheet) throws WriteException {
+			// Lets create a times font
+			WritableFont times10pt = new WritableFont(WritableFont.TIMES, 10);
+			// Define the cell format
+			times = new WritableCellFormat(times10pt);
+			// Lets automatically wrap the cells
+			times.setWrap(true);
+
+			// create create a bold font with underlines
+			WritableFont times10ptBoldUnderline = new WritableFont(
+					WritableFont.TIMES, 10, WritableFont.BOLD, false,
+					UnderlineStyle.SINGLE);
+			timesBoldUnderline = new WritableCellFormat(times10ptBoldUnderline);
+			// Lets automatically wrap the cells
+			timesBoldUnderline.setWrap(true);
+
+			CellView cv = new CellView();
+			cv.setFormat(times);
+			cv.setFormat(timesBoldUnderline);
+			cv.setAutosize(true);
+
+			// Write a few headers
+			// Write a few headers
+			int i = 0;
+			addCaption(sheet, i++, 0, "Student Name");
+			addCaption(sheet, i++, 0, "Grade");
+			addCaption(sheet, i++, 0, "Locker Agreement");
+
+		}
+
+
+// Write Family Partnership agreement results
+	public void writeFamilyPartnershipAgreement() throws IOException, WriteException {
+		File file = new File(outputFile);
+		WorkbookSettings wbSettings = new WorkbookSettings();
+
+		wbSettings.setLocale(new Locale("en", "EN"));
+
+		WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
+		workbook.createSheet("Family Partnership Agreements", 0);
+		WritableSheet excelSheet = workbook.getSheet(0);
+		createFamilyPartnershipAgreementLabels(excelSheet);
+
+		// write each student to the spreadsheet
+		int row = 1;
+		for (Family f : families) {
+			int i = 0;
+			
+			i = writeParentNames(excelSheet, row, f, i);
+			
+			addYellowNoLabel(excelSheet, i++, row, f.extras.commitToMenno);
+			
+			row++;
+		}
+		
+		workbook.write();
+		workbook.close();
+	}
+
+	private void createFamilyPartnershipAgreementLabels(WritableSheet sheet) throws WriteException {
+		// Lets create a times font
+		WritableFont times10pt = new WritableFont(WritableFont.TIMES, 10);
+		// Define the cell format
+		times = new WritableCellFormat(times10pt);
+		// Lets automatically wrap the cells
+		times.setWrap(true);
+
+		// create create a bold font with underlines
+		WritableFont times10ptBoldUnderline = new WritableFont(
+				WritableFont.TIMES, 10, WritableFont.BOLD, false,
+				UnderlineStyle.SINGLE);
+		timesBoldUnderline = new WritableCellFormat(times10ptBoldUnderline);
+		// Lets automatically wrap the cells
+		timesBoldUnderline.setWrap(true);
+
+		CellView cv = new CellView();
+		cv.setFormat(times);
+		cv.setFormat(timesBoldUnderline);
+		cv.setAutosize(true);
+
+		// Write a few headers
+		// Write a few headers
+		int i = 0;
+		addCaption(sheet, i++, 0, "Family Name");
+		addCaption(sheet, i++, 0, "Agree to Partnership Commitment");
 
 	}
 }

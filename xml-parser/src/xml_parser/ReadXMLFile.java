@@ -29,8 +29,8 @@ public class ReadXMLFile {
 		
 		try {
 
-			File fXmlFile = new File("Export_2014-05-24.xml");	
-//					"/Users/willms/Documents/workspace/xml-parser/Export_2013-10-13.xml");
+			File fXmlFile = new File("Export_2015-08-22.xml");	
+//			File fXmlFile = new File("Export_2014-08-22.xml");	
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -127,55 +127,29 @@ public class ReadXMLFile {
 		
 		WriteExcel excel = new WriteExcel (families);
 		try {
+			
 			excel.setOutputFile("finances.xls");
 			excel.writeFinances();
-		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-		try {
+			
 			excel.setOutputFile("volunteerOutcomes.xls");
 			excel.writeVolunteerOutcomes();
-		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
-		try {
+			
 			excel.setOutputFile("schoolDirectory.xls");
 			excel.writeSchoolDirectory();
-		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 
-		try {
 			excel.setOutputFile("ITAgreements.xls");
 			excel.writeITAgreements();
-		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		try {
 			excel.setOutputFile("InformationDisclosure.xls");
 			excel.writeInfoDisclosure();
+
+			excel.setOutputFile("LockerAgreement.xls");
+			excel.writeLockerAgreement();
+
+			excel.setOutputFile("FamilyPartnershipAgreement.xls");
+			excel.writeFamilyPartnershipAgreement();
+			
+			
 		} catch (WriteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -259,9 +233,6 @@ public class ReadXMLFile {
 			}
 			
 		}
-		else if (idMatches(e, "tfa_9356123593324")) {
-			data.volunteering = parseVolunteering (e);	
-		}
 		else if (idMatches(e, "tfa_9356123593448")) {
 			
 			data.extras.parentCovenant = getChoiceString(e, "tfa_9356123593455");
@@ -274,6 +245,12 @@ public class ReadXMLFile {
 		}
 		else if (idMatches(e, "tfa_9356123593459")) {
 			data.extras.commitToMenno = getChoiceString(e, "tfa_9356123593469");
+		}
+		else if (idMatches(e, "tfa_9356123593672")) {
+			data.directory = parseDirectoryInfo (e);	
+		}
+		else if (idMatches(e, "tfa_9356123593324")) {
+			data.volunteering = parseVolunteering (e);	
 		}
 		else if (idMatches(e, "tfa_9356123593274")) {
 			
@@ -365,10 +342,10 @@ public class ReadXMLFile {
 	private static List<String> getChoiceList(Element e, String id) {
 		NodeList items = findId(e, id).getElementsByTagName("choice");
 
-		// if there was not choice items found, return null
+		// if there was not choice items found, return empty string
 		if (items.getLength() == 0) {
 			System.out.println ("Log: Did not find choice for id: " + id);
-			return null;
+			return new LinkedList<String>();
 		}
 		
 		List<String> choices = new LinkedList<String>() ;
@@ -464,15 +441,24 @@ public class ReadXMLFile {
 		v.alreadyVolunteering = getChoiceString(e, "tfa_9356123593327");
 		v.existingPosition = getChoiceString(e, "tfa_9356123593333");
 		v.interestedArea = getChoiceString(e, "tfa_9356123593335");
-		v.monthlyOptions = getChoiceList(e, "tfa_9356123593371");
-		v.eventOptions = getChoiceList(e, "tfa_9356123593381");
+		v.availableTimes = getChoiceList(e, "tfa_9356123593662");
 		v.additionalOptions = getSingleValueString(e, "tfa_9356123593400");
-		v.societyAdminContactPlease = getChoiceString(e, "tfa_9356123593643").isEmpty() ? "No" : "Yes";
+		v.otherTalents = getSingleValueString(e, "tfa_9356123593671");
 		v.acknoledgeResponsibility = getChoiceString(e, "tfa_9356123593476");
 		
 		return v;
 	}
 
+
+	private static Directory parseDirectoryInfo(Element e) {
+
+		Directory info = new Directory();
+		
+		info.changesToDirectoryInfo = getSingleValueString(e, "tfa_9356123593682");
+		info.schoolDirectoryConsentForm = getChoiceString(e, "tfa_9356123593686");
+		
+		return info;
+	}
 
 	private static InfoDisclosure parseConsentOfInfoDisclosure(Element e) {
 	
@@ -496,6 +482,7 @@ public class ReadXMLFile {
 		f.yearbook = Integer.valueOf(getSingleValueString(e, "tfa_9356123593318"));
 		f.school = Integer.valueOf(getSingleValueString(e, "tfa_9356123593320"));
 		f.gr6Campout = Integer.valueOf(getSingleValueString(e, "tfa_9356123593312"));
+		f.gr7Technology = Integer.valueOf(getSingleValueString(e, "tfa_9356123593695"));
 		f.gr9SALTS = Integer.valueOf(getSingleValueString(e, "tfa_9356123593314"));
 		f.gr9Graduation = Integer.valueOf(getSingleValueString(e, "tfa_9356123593313"));
 		f.society = Integer.valueOf(getSingleValueString(e, "tfa_9356123593315"));

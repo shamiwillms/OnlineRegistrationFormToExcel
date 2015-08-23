@@ -35,6 +35,8 @@ public class Family {
 
 	Volunteering volunteering = null;
 
+	Directory directory = null;
+
 	Extras extras = new Extras();
 
 	Fees fees = null;
@@ -55,6 +57,7 @@ public class Family {
 	Integer grade6CampoutFee = 0;
 	Integer grade9GradFee = 0;
 	Integer saltsFee = 0;
+
 	
 	
 	public void print() {
@@ -84,6 +87,7 @@ public class Family {
 		}
 		
 		consentOfInfoDisclosure.print();
+		directory.print();
 		volunteering.print();
 		extras.print();
 		fees.print();
